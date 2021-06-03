@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -7,8 +8,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-const db =
-  "mongodb+srv://john:1234@crud.6dzkh.mongodb.net/audio?retryWrites=true&w=majority";
+const db = process.env.DBURI;
 
 const connectDB = async () => {
   try {
@@ -59,7 +59,7 @@ app.post("/add", (req, res) => {
 app.delete("/:id", async (req, res) => {
   const id = req.params.id;
   await Record.deleteOne({ _id: id });
-  res.status(200).json({ succsse: `Recording ${id} has been deleted` });
+  res.status(200).json({ success: `Recording ${id} has been deleted` });
 });
 
 app.listen(3001, () => console.log("Server running on port 3001"));
