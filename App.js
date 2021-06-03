@@ -1,55 +1,19 @@
-import React, { useState } from "react";
-import { Text, View, StyleSheet, Button } from "react-native";
-import { Audio } from "expo-av";
+import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import PlayerScreen from "./screens/PlayerScreen";
+import RecorderScreen from "./screens/RecorderScreen";
 
+const Tab = createBottomTabNavigator();
 export default function App() {
-  const [recording, setRecording] = useState();
-  const [saveUri, setSaveUri] = useState();
-
-  async function startRecording() {
-    try {
-      console.log("Requesting permissions..");
-      await Audio.requestPermissionsAsync();
-      await Audio.setAudioModeAsync({
-        allowsRecordingIOS: true,
-        playsInSilentModeIOS: true,
-      });
-      console.log("Starting recording..");
-      const recording = new Audio.Recording();
-      await recording.prepareToRecordAsync(
-        Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY
-      );
-      await recording.startAsync();
-      setRecording(recording);
-      console.log("Recording started");
-    } catch (err) {
-      console.error("Failed to start recording", err);
-    }
-  }
-
-  async function stopRecording() {
-    console.log("Stopping recording..");
-    setRecording(undefined);
-    await recording.stopAndUnloadAsync();
-    setSaveUri(recording.getURI());
-    console.log("Recording stopped and stored at", saveUri);
-  }
-
   return (
-    <View style={styles.container}>
-      <Button
-        title={recording ? "Stop Recording" : "Start Recording"}
-        onPress={recording ? stopRecording : startRecording}
-      />
-    </View>
+    <React.Fragment>
+      <NavigationContainer>
+        <Tab.Navigator initialRouteName="Record">
+          <Tab.Screen name="Inspelaren" component={RecorderScreen} />
+          <Tab.Screen name="Inspelade ljud" component={PlayerScreen} />
+        </Tab.Navigator>
+      </NavigationContainer>
+    </React.Fragment>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
